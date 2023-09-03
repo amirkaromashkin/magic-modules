@@ -125,7 +125,9 @@ if [ "$REPO" == "terraform-google-conversion" ]; then
     rm -rf ./cai2hcl
     popd
 
-    bundle exec compiler.rb -a -e terraform -f tgc_cai2hcl -o $LOCAL_PATH/cai2hcl -v $VERSION
+    # Note: currently all manual converters are copied (i.e. ComputeInstance, Project, ProjectBilling, etc.),
+    # but only 3 resources are generated (ComputeForwarding, ComputeHealthCheck and ComputeBackendService).
+    bundle exec compiler.rb -p products/compute -t ForwardingRule,HealthCheck,BackendService -e terraform -f tgc_cai2hcl -o $LOCAL_PATH/cai2hcl -v $VERSION
 
     if [ "$COMMAND" == "downstream" ]; then
       pushd $LOCAL_PATH

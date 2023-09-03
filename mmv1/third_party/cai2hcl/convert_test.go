@@ -23,6 +23,8 @@ var testDataFileNames = []string{
 	"project_create",
 	"project_iam",
 	"full_compute_forwarding_rule",
+	"full_compute_backend_service",
+	"full_compute_health_check",
 }
 
 func TestCai2HclConvert(t *testing.T) {
