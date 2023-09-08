@@ -122,7 +122,7 @@ if [ "$REPO" == "terraform-google-conversion" ]; then
 
     # Generate cai2hcl
     pushd $LOCAL_PATH
-    rm -rf ./cai2hcl
+    rm -rf ./cai2hcl/*
     popd
 
     # Note: currently all manual converters are copied (i.e. ComputeInstance, Project, ProjectBilling, etc.),
