@@ -7,9 +7,9 @@ import (
 
 	hashicorpcty "github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	transport_tpg "github.com/hashicorp/terraform-provider-google-beta/google-beta/transport"
 	"github.com/zclconf/go-cty/cty"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
-	transport_tpg "github.com/hashicorp/terraform-provider-google-beta/google-beta/transport"
 )
 
 // Extracts named part from resource url.
@@ -66,7 +66,7 @@ func hashicorpCtyTypeToZclconfCtyType(t hashicorpcty.Type) (cty.Type, error) {
 	return ret, nil
 }
 
-// Normalizes flatteners output map by eliminating unmarshallable objects like schema.Map
+// Normalizes flatteners output map by eliminating unmarshallable objects like schema.Set
 func normalizeFlattenedMap(obj interface{}) interface{} {
 	switch obj.(type) {
 	case []interface{}:
