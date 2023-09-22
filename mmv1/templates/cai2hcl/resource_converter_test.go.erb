@@ -1,0 +1,22 @@
+<%=lines(autogen_notice(:go, pwd))-%>
+
+package <%= product_ns.downcase -%>
+
+import (
+	"testing"
+
+	cai2hclTesting "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/testing"
+)
+
+<%
+    resource_name = product_ns + object.name
+    asset_type = product_ns + object.name + 'AssetType'
+%>
+
+func Test<%=resource_name-%>(t *testing.T) {
+	cai2hclTesting.AssertTestFiles(
+		t,
+		ConverterNames, ConverterMap,
+		TestsFolder,
+		TestsMap[ConverterNames[<%=asset_type-%>]])
+}

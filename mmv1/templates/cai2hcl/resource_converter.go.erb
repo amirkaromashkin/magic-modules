@@ -2,7 +2,7 @@
 
 package <%= product_ns.downcase -%>
 
-<%# "goimports" is used to remove unreferenced imports.. %>
+<%# "goimports" is used to remove unreferenced imports %>
 import (
     "fmt"
     "log"
@@ -22,7 +22,7 @@ import (
     transport_tpg "<%= import_path() -%>/transport"
     "<%= import_path() -%>/verify"
    "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/caiasset"
-   "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/google/converters/common"
+   "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/common"
 )
 
 <%
