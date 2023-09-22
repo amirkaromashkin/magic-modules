@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/caiasset"
@@ -71,16 +72,20 @@ func CreateConverterMap(converterFactories map[string]ConverterFactory) map[stri
 	return result
 }
 
-func Convert(assets []*caiasset.Asset, converterNames map[string]string, converterMap map[string]Converter) ([]byte, error) {
+func Convert(assets []*caiasset.Asset, converterNamesPerAssetType map[string]string, converterNamesPerAssetNameRegex map[string]string, converterMap map[string]Converter) ([]byte, error) {
 	// Group resources from the same tf resource type for convert.
 	// tf -> cai has 1:N mappings occasionally
 	groups := make(map[string][]*caiasset.Asset)
 	for _, asset := range assets {
-		name, ok := converterNames[asset.Type]
+		name, ok := converterNamesPerAssetType[asset.Type]
+
 		if !ok {
-			continue
+			name, ok = tryGetConverterNameByAssetNameRegex(asset.Name, converterNamesPerAssetNameRegex)
 		}
-		groups[name] = append(groups[name], asset)
+
+		if ok {
+			groups[name] = append(groups[name], asset)
+		}
 	}
 
 	f := hclwrite.NewFile()
@@ -107,6 +112,17 @@ func Convert(assets []*caiasset.Asset, converterNames map[string]string, convert
 	}
 
 	return printer.Format(f.Bytes())
+}
+
+func tryGetConverterNameByAssetNameRegex(assetName string, converterNamesPerAssetNameRegex map[string]string) (string, bool) {
+	for regexString, converterName := range converterNamesPerAssetNameRegex {
+		compiledRegexp, _ := regexp.Compile(regexString)
+		if compiledRegexp.MatchString(assetName) {
+			return converterName, true
+		}
+	}
+
+	return "", false
 }
 
 func NewConfig() *tpg_transport.Config {

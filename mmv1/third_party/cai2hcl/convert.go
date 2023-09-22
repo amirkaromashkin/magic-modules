@@ -21,7 +21,7 @@ func Convert(assets []*caiasset.Asset, options *Options) ([]byte, error) {
 		return nil, fmt.Errorf("logger is not initialized")
 	}
 
-	t, err := common.Convert(assets, ConverterNames, ConverterMap)
+	t, err := common.Convert(assets, ConverterNamesPerAssetType, ConverterNamesPerAssetNameRegex, ConverterMap)
 
 	options.ErrorLogger.Debug(string(t))
 

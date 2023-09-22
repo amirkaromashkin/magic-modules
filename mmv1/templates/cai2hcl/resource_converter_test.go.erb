@@ -11,20 +11,15 @@ import (
 
 <%
     resource_name = product_ns + object.name
-    asset_type = product_ns + object.name + 'AssetType'
+    converter_file_name = "#{product_ns.downcase}_#{object.name.underscore}"
 %>
 
 func Test<%=resource_name-%>(t *testing.T) {
-    assetType := <%=asset_type-%>
-
-    testFiles, testFilesFound := ConverterNames[assetType]
-	if !testFilesFound {
-		panic(fmt.Sprintf("Tests not found for '%s'", assetType))
-	}
+    testFileName := "<%=converter_file_name-%>"
 
 	cai2hcl_testing.AssertTestFiles(
 		t,
-		ConverterNames, ConverterMap,
-		TestsFolder,
-		TestsMap[testFiles])
+		ConverterNamesPerAssetType, ConverterNamesPerAssetNameRegex, ConverterMap,
+		"./testdata",
+		[]string { testFileName })
 }

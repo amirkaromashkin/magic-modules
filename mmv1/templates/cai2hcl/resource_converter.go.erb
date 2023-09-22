@@ -8,6 +8,7 @@ import (
     "log"
     "reflect"
     "time"
+    "regexp"
     "github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
     "github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
     "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -38,6 +39,8 @@ import (
 <%=lines(compile(pwd + '/' + object.custom_code.constants)) if object.custom_code.constants-%>
 
 const <%=resource_name-%>AssetType string = "<%=product_backend_name.downcase-%>.googleapis.com/<%=object.name-%>"
+
+const <%=resource_name-%>AssetNameRegex string = "<%=format2regex(object.base_url)-%>"
 
 type <%=converter_name-%> struct {
 	name   string
