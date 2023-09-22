@@ -5,7 +5,9 @@ import (
 )
 
 var ConverterNames = map[string]string{
-	ComputeInstanceAssetType:             "google_compute_instance",
+	// Custom converters
+	ComputeInstanceAssetType: "google_compute_instance",
+	// Generated converters
 	ComputeForwardingRuleAssetType:       "google_compute_forwarding_rule",
 	ComputeGlobalForwardingRuleAssetType: "google_compute_global_forwarding_rule",
 	ComputeRegionBackendServiceAssetType: "google_compute_region_backend_service",
@@ -14,7 +16,9 @@ var ConverterNames = map[string]string{
 }
 
 var ConverterMap = common.CreateConverterMap(map[string]common.ConverterFactory{
-	"google_compute_instance":               NewComputeInstanceConverter,
+	// Custom converters
+	"google_compute_instance": NewComputeInstanceConverter,
+	// Generated converters
 	"google_compute_forwarding_rule":        NewComputeForwardingRuleConverter,
 	"google_compute_global_forwarding_rule": NewComputeGlobalForwardingRuleConverter,
 	"google_compute_region_backend_service": NewComputeRegionBackendServiceConverter,
@@ -25,7 +29,9 @@ var ConverterMap = common.CreateConverterMap(map[string]common.ConverterFactory{
 var TestsFolder = "./testdata"
 
 var TestsMap = map[string][]string{
-	"google_compute_instance":               {"full_compute_instance", "compute_instance_iam"},
+	// Custom converters
+	"google_compute_instance": {"full_compute_instance", "compute_instance_iam"},
+	// Generated converters
 	"google_compute_forwarding_rule":        {"full_compute_forwarding_rule"},
 	"google_compute_global_forwarding_rule": {"full_compute_global_forwarding_rule"},
 	"google_compute_region_backend_service": {"full_compute_region_backend_service"},
