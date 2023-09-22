@@ -3,9 +3,10 @@
 package <%= product_ns.downcase -%>
 
 import (
+    "fmt"
 	"testing"
 
-	cai2hclTesting "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/testing"
+	cai2hcl_testing "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/testing"
 )
 
 <%
@@ -14,9 +15,16 @@ import (
 %>
 
 func Test<%=resource_name-%>(t *testing.T) {
-	cai2hclTesting.AssertTestFiles(
+    assetType := <%=asset_type-%>
+
+    testFiles, testFilesFound := ConverterNames[assetType]
+	if !testFilesFound {
+		panic(fmt.Sprintf("Tests not found for '%s'", assetType))
+	}
+
+	cai2hcl_testing.AssertTestFiles(
 		t,
 		ConverterNames, ConverterMap,
 		TestsFolder,
-		TestsMap[ConverterNames[<%=asset_type-%>]])
+		TestsMap[testFiles])
 }
