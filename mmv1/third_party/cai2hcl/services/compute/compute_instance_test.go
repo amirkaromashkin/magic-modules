@@ -9,7 +9,7 @@ import (
 func TestComputeInstance(t *testing.T) {
 	cai2hclTesting.AssertTestFiles(
 		t,
-		ConverterNamesPerAssetType, ConverterNamesPerAssetNameRegex, ConverterMap,
+		ConverterNamesPerAssetType, AssetNameRegexpConverterPairs, ConverterMap,
 		"./testdata",
 		[]string{
 			"full_compute_instance",

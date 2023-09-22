@@ -19,7 +19,7 @@ func Test<%=resource_name-%>(t *testing.T) {
 
 	cai2hcl_testing.AssertTestFiles(
 		t,
-		ConverterNamesPerAssetType, ConverterNamesPerAssetNameRegex, ConverterMap,
+		ConverterNamesPerAssetType, AssetNameRegexpConverterPairs, ConverterMap,
 		"./testdata",
 		[]string { testFileName })
 }

@@ -3,13 +3,9 @@ package common
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/caiasset"
 	hashicorpcty "github.com/hashicorp/go-cty/cty"
-	"github.com/hashicorp/hcl/hcl/printer"
-	"github.com/hashicorp/hcl/v2/hclwrite"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	tpg_provider "github.com/hashicorp/terraform-provider-google-beta/google-beta/provider"
 	tpg_transport "github.com/hashicorp/terraform-provider-google-beta/google-beta/transport"
@@ -72,59 +68,6 @@ func CreateConverterMap(converterFactories map[string]ConverterFactory) map[stri
 	return result
 }
 
-func Convert(assets []*caiasset.Asset, converterNamesPerAssetType map[string]string, converterNamesPerAssetNameRegex map[string]string, converterMap map[string]Converter) ([]byte, error) {
-	// Group resources from the same tf resource type for convert.
-	// tf -> cai has 1:N mappings occasionally
-	groups := make(map[string][]*caiasset.Asset)
-	for _, asset := range assets {
-		name, ok := converterNamesPerAssetType[asset.Type]
-
-		if !ok {
-			name, ok = tryGetConverterNameByAssetNameRegex(asset.Name, converterNamesPerAssetNameRegex)
-		}
-
-		if ok {
-			groups[name] = append(groups[name], asset)
-		}
-	}
-
-	f := hclwrite.NewFile()
-	rootBody := f.Body()
-	for name, v := range groups {
-		converter, ok := converterMap[name]
-		if !ok {
-			continue
-		}
-		items, err := converter.Convert(v)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, resourceBlock := range items {
-			hclBlock := rootBody.AppendNewBlock("resource", resourceBlock.Labels)
-			if err := hclWriteBlock(resourceBlock.Value, hclBlock.Body()); err != nil {
-				return nil, err
-			}
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return printer.Format(f.Bytes())
-}
-
-func tryGetConverterNameByAssetNameRegex(assetName string, converterNamesPerAssetNameRegex map[string]string) (string, bool) {
-	for regexString, converterName := range converterNamesPerAssetNameRegex {
-		compiledRegexp, _ := regexp.Compile(regexString)
-		if compiledRegexp.MatchString(assetName) {
-			return converterName, true
-		}
-	}
-
-	return "", false
-}
-
 func NewConfig() *tpg_transport.Config {
 	// Currently its not needed, but it may change in future.
 	return &tpg_transport.Config{
@@ -133,53 +76,6 @@ func NewConfig() *tpg_transport.Config {
 		Region:    "",
 		UserAgent: "",
 	}
-}
-
-func hclWriteBlock(val cty.Value, body *hclwrite.Body) error {
-	if val.IsNull() {
-		return nil
-	}
-	if !val.Type().IsObjectType() {
-		return fmt.Errorf("expect object type only, but type = %s", val.Type().FriendlyName())
-	}
-	it := val.ElementIterator()
-	for it.Next() {
-		objKey, objVal := it.Element()
-		if objVal.IsNull() {
-			continue
-		}
-		objValType := objVal.Type()
-		switch {
-		case objValType.IsObjectType():
-			newBlock := body.AppendNewBlock(objKey.AsString(), nil)
-			if err := hclWriteBlock(objVal, newBlock.Body()); err != nil {
-				return err
-			}
-		case objValType.IsCollectionType():
-			if objVal.LengthInt() == 0 {
-				continue
-			}
-			// Presumes map should not contain object type.
-			if !objValType.IsMapType() && objValType.ElementType().IsObjectType() {
-				listIterator := objVal.ElementIterator()
-				for listIterator.Next() {
-					_, listVal := listIterator.Element()
-					subBlock := body.AppendNewBlock(objKey.AsString(), nil)
-					if err := hclWriteBlock(listVal, subBlock.Body()); err != nil {
-						return err
-					}
-				}
-				continue
-			}
-			fallthrough
-		default:
-			if objValType.FriendlyName() == "string" && objVal.AsString() == "" {
-				continue
-			}
-			body.SetAttributeValue(objKey.AsString(), objVal)
-		}
-	}
-	return nil
 }
 
 func hashicorpCtyTypeToZclconfCtyType(t hashicorpcty.Type) (cty.Type, error) {

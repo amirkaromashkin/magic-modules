@@ -11,10 +11,10 @@ var allConverterNamesPerAssetType = []map[string]string{
 	resourcemanager.ConverterNamesPerAssetType,
 }
 
-var allConverterNamesPerAssetNameRegex = []map[string]string{
-	compute.ConverterNamesPerAssetNameRegex,
-	resourcemanager.ConverterNamesPerAssetRegex,
-}
+var AssetNameRegexpConverterPairs []common.RegexpNamePair = append(
+	compute.AssetNameRegexpConverterPairs,
+	resourcemanager.AssetNameRegexpConverterPairs...,
+)
 
 var allConverterMaps = []map[string]common.Converter{
 	compute.ConverterMap,
@@ -22,7 +22,7 @@ var allConverterMaps = []map[string]common.Converter{
 }
 
 var ConverterNamesPerAssetType = joinConverterNames(allConverterNamesPerAssetType)
-var ConverterNamesPerAssetNameRegex = joinConverterNames(allConverterNamesPerAssetNameRegex)
+var ConverterNamesPerAssetNameRegex = joinConverterNames(allConverterNamesPerAssetType)
 var ConverterMap = joinConverterMaps(allConverterMaps)
 
 func joinConverterNames(arr []map[string]string) map[string]string {

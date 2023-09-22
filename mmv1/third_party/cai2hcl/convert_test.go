@@ -11,7 +11,7 @@ import (
 func TestConvertCompute(t *testing.T) {
 	cai2hclTesting.AssertTestFiles(
 		t,
-		ConverterNamesPerAssetType, ConverterNamesPerAssetNameRegex, ConverterMap,
+		ConverterNamesPerAssetType, AssetNameRegexpConverterPairs, ConverterMap,
 		"./services/compute/testdata",
 		[]string{
 			"full_compute_instance",
@@ -21,7 +21,7 @@ func TestConvertCompute(t *testing.T) {
 func TestConvertResourcemanager(t *testing.T) {
 	cai2hclTesting.AssertTestFiles(
 		t,
-		ConverterNamesPerAssetType, ConverterNamesPerAssetNameRegex, ConverterMap,
+		ConverterNamesPerAssetType, AssetNameRegexpConverterPairs, ConverterMap,
 		"./services/resourcemanager/testdata",
 		[]string{
 			"project_create",

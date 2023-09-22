@@ -9,7 +9,7 @@ var ConverterNamesPerAssetType = map[string]string{
 	ProjectBillingAssetType: "google_project",
 }
 
-var ConverterNamesPerAssetRegex = map[string]string{}
+var AssetNameRegexpConverterPairs = []common.RegexpNamePair{}
 
 var ConverterMap = common.CreateConverterMap(map[string]common.ConverterFactory{
 	"google_project": NewProjectConverter,

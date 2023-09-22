@@ -20,3 +20,10 @@ type HCLResourceBlock struct {
 	Labels []string
 	Value  cty.Value
 }
+
+// A pair of asset name format and converter name.
+// Used to identify converters not based on asset type, but based on the name (i.e. selfLink).
+type RegexpNamePair struct {
+	AssetNameRegexp string
+	ConverterName   string
+}
