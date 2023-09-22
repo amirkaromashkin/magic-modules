@@ -1,45 +1,52 @@
 package cai2hcl
 
 import (
-	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/google/converters"
-	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/google/converters/common"
-	computeConverters "github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/google/converters/compute"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	tpg "github.com/hashicorp/terraform-provider-google-beta/google-beta"
+	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/common"
+	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/services/compute"
+	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/cai2hcl/services/resourcemanager"
 )
 
-var ConverterNames = map[string]string{
-	// Manual
-	converters.ProjectAssetType:                "google_project",
-	converters.ProjectBillingAssetType:         "google_project",
-	computeConverters.ComputeInstanceAssetType: "google_compute_instance",
-	// Generated
-	computeConverters.ComputeForwardingRuleAssetType:       "google_compute_forwarding_rule",
-	computeConverters.ComputeGlobalForwardingRuleAssetType: "google_compute_global_forwarding_rule",
-	computeConverters.ComputeRegionBackendServiceAssetType: "google_compute_region_backend_service",
-	computeConverters.ComputeBackendServiceAssetType:       "google_compute_backend_service",
-	computeConverters.ComputeHealthCheckAssetType:          "google_compute_health_check",
+var allConverterNames = []map[string]string{
+	compute.ConverterNames,
+	resourcemanager.ConverterNames,
 }
 
-var converterFactories = map[string]func(name string, schema map[string]*schema.Schema) common.Converter{
-	// Manual
-	"google_project":          converters.NewProjectConverter,
-	"google_compute_instance": computeConverters.NewComputeInstanceConverter,
-	// Generated
-	"google_compute_forwarding_rule":        computeConverters.NewComputeForwardingRuleConverter,
-	"google_compute_global_forwarding_rule": computeConverters.NewComputeGlobalForwardingRuleConverter,
-	"google_compute_region_backend_service": computeConverters.NewComputeRegionBackendServiceConverter,
-	"google_compute_backend_service":        computeConverters.NewComputeBackendServiceConverter,
-	"google_compute_health_check":           computeConverters.NewComputeHealthCheckConverter,
+var allConverterMaps = []map[string]common.Converter{
+	compute.ConverterMap,
+	resourcemanager.ConverterMap,
 }
 
-var ConverterMap map[string]common.Converter
+var ConverterNames = joinConverterNames(allConverterNames)
+var ConverterMap = joinConverterMaps(allConverterMaps)
 
-func init() {
-	tpgProvider := tpg.Provider()
+func joinConverterNames(arr []map[string]string) map[string]string {
+	result := make(map[string]string)
 
-	ConverterMap = make(map[string]common.Converter, len(converterFactories))
-	for name, factory := range converterFactories {
-		ConverterMap[name] = factory(name, tpgProvider.ResourcesMap[name].Schema)
+	for _, m := range arr {
+		for key, value := range m {
+			if _, hasKey := result[key]; hasKey {
+				panic("Converters from different services are not unique")
+			}
+
+			result[key] = value
+		}
 	}
+
+	return result
+}
+
+func joinConverterMaps(arr []map[string]common.Converter) map[string]common.Converter {
+	result := make(map[string]common.Converter)
+
+	for _, m := range arr {
+		for key, value := range m {
+			if _, hasKey := result[key]; hasKey {
+				panic("Converters from different services are not unique")
+			}
+
+			result[key] = value
+		}
+	}
+
+	return result
 }
