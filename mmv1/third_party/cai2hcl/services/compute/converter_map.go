@@ -19,7 +19,7 @@ var AssetNameRegexpConverterPairs = []common.RegexpNamePair{
 	{AssetNameRegexp: ComputeBackendServiceAssetNameRegex, ConverterName: "google_compute_backend_service"},
 }
 
-// Mapping between converter name and converter constructor.
+// Mapping between converter name and converter instances.
 var ConverterMap = common.CreateConverterMap(map[string]common.ConverterFactory{
 	"google_compute_instance":               NewComputeInstanceConverter,
 	"google_compute_forwarding_rule":        NewComputeForwardingRuleConverter,
