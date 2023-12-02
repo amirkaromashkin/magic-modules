@@ -1,7 +1,7 @@
 package matchers
 
 import (
-	"github.com/GoogleCloudPlatform/terraform-google-conversion/v2/caiasset"
+	"github.com/GoogleCloudPlatform/terraform-google-conversion/v5/caiasset"
 )
 
 type ConverterMatcher interface {

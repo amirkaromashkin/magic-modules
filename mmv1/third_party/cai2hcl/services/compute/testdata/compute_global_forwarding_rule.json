@@ -1,0 +1,22 @@
+[
+    {
+      "name": "//compute.googleapis.com/projects/myproj/global/forwardingRules/fr-1",
+      "asset_type": "compute.googleapis.com/ForwardingRule",
+      "ancestry_path": "organizations/123/folders/456/project/myproj",
+      "resource": {
+        "version": "v1",
+        "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+        "discovery_name": "ForwardingRule",
+        "parent": "//cloudresourcemanager.googleapis.com/projects/myproj",
+        "data": {
+            "IPProtocol": "TCP",
+            "ipVersion": "IPV4",
+            "loadBalancingScheme": "EXTERNAL_MANAGED",
+            "name": "fr-1",
+            "networkTier": "PREMIUM",
+            "portRange": "443",
+            "target": "projects/myproj/global/targetSslProxies/tp-1"
+        }
+      }
+    }
+  ]
