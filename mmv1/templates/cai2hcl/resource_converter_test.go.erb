@@ -1,0 +1,22 @@
+<%=lines(autogen_notice(:go, pwd))-%>
+
+package <%= object.__product.name.downcase -%>_test
+
+import (
+    "fmt"
+	"testing"
+
+	cai2hcl_testing "github.com/GoogleCloudPlatform/terraform-google-conversion/v5/cai2hcl/testing"
+)
+
+<%
+    resource_name = object.__product.name + object.name
+    converter_file_name = "#{object.__product.name.underscore}_#{object.name.underscore}"
+%>
+
+func test<%=resource_name-%>(t *testing.T) {
+	cai2hcl_testing.AssertTestFiles(
+		t,
+		"./testdata",
+		[]string { "<%=converter_file_name-%>" })
+}

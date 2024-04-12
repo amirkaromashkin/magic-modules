@@ -93,7 +93,7 @@ tgc:
 	cd mmv1;\
 		bundle;\
 		bundle exec compiler -e terraform -f tgc -v beta -o $(OUTPUT_PATH)/tfplan2cai $(mmv1_compile);\
-		bundle exec compiler -e terraform -f tgc_cai2hcl -v beta -o $(OUTPUT_PATH)/cai2hcl $(mmv1_compile);\
+		bundle exec compiler -e terraform -f tgc_cai2hcl -v beta -o $(OUTPUT_PATH)/cai2hcl -p products/compute -t ForwardingRule $(mmv1_compile);\
 
 tf-oics:
 	cd mmv1;\

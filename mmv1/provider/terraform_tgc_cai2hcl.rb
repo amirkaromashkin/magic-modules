@@ -22,9 +22,37 @@ module Provider
       false
     end
 
-    def generate(output_folder, types, _product_path, _dump_yaml, generate_code, generate_docs) end
+    def generate(output_folder, types, _product_path, _dump_yaml, generate_code, generate_docs)
+      Google::LOGGER.info('Generating cai2hcl converters')
+      Google::LOGGER.info('NOTE: Cai2hcl converters are IN DEVELOPMENT and subject to change.')
 
-    def generate_resource(pwd, data, _generate_code, _generate_docs) end
+      @base_url = @version.cai_base_url || @version.base_url
+      generate_objects(
+        output_folder,
+        types,
+        generate_code,
+        generate_docs
+      )
+    end
+
+    def generate_resource(pwd, data, _generate_code, _generate_docs)
+      product_name = data.object.__product.name.downcase
+
+      generators_folder = File.join(data.output_folder, 'services', product_name)
+      FileUtils.mkdir_p(generators_folder)
+
+      object_name = data.object.name.underscore
+
+      data.generate(pwd,
+                    'templates/cai2hcl/resource_converter.go.erb',
+                    File.join(generators_folder, "#{product_name}_#{object_name}.go"),
+                    self)
+
+      data.generate(pwd,
+                    'templates/cai2hcl/resource_converter_test.go.erb',
+                    File.join(generators_folder, "#{product_name}_#{object_name}_test.go"),
+                    self)
+    end
 
     def compile_common_files(output_folder, products, _common_compile_file) end
 
@@ -38,7 +66,9 @@ module Provider
       FileUtils.cp_r('third_party/cai2hcl/.', output_folder)
     end
 
-    def generate_resource_tests(pwd, data) end
+    def generate_resource_tests(pwd, data)
+      # Generated at "generate_resource" stage.
+    end
 
     def generate_iam_policy(pwd, data, generate_code, _generate_docs) end
 
