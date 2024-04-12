@@ -1,6 +1,6 @@
 <%=lines(autogen_notice(:go, pwd))-%>
 
-package <%= object.__product.name.downcase -%>
+package <%= object.__product.name.downcase -%>_test
 
 import (
     "fmt"
@@ -10,14 +10,13 @@ import (
 )
 
 <%
-    resource_name = object.__product.name.downcase + object.name
-    converter_file_name = "#{object.__product.name.downcase}_#{object.name.underscore}"
+    resource_name = object.__product.name + object.name
+    converter_file_name = "#{object.__product.name.underscore}_#{object.name.underscore}"
 %>
 
-func Test<%=resource_name-%>(t *testing.T) {
+func test<%=resource_name-%>(t *testing.T) {
 	cai2hcl_testing.AssertTestFiles(
 		t,
-		UberConverter,
 		"./testdata",
 		[]string { "<%=converter_file_name-%>" })
 }

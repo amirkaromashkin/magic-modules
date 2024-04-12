@@ -48,10 +48,10 @@ module Provider
                     File.join(generators_folder, "#{product_name}_#{object_name}.go"),
                     self)
 
-      # data.generate(pwd,
-      #               'templates/cai2hcl/resource_converter_test.go.erb',
-      #               File.join(generators_folder, "#{product_name}_#{object_name}_test.go"),
-      #               self)
+      data.generate(pwd,
+                    'templates/cai2hcl/resource_converter_test.go.erb',
+                    File.join(generators_folder, "#{product_name}_#{object_name}_test.go"),
+                    self)
     end
 
     def compile_common_files(output_folder, products, _common_compile_file) end

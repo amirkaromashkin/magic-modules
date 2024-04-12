@@ -27,9 +27,10 @@ import (
 )
 
 <%
-    resource_name = object.__product.name.downcase + object.name
+    resource_name = object.__product.name + object.name
+    resource_name_underscore = "#{object.__product.name.underscore}_#{object.name.underscore}"
 
-	  properties = object.all_user_properties
+	properties = object.all_user_properties
 
     product_backend_name=@base_url.split('://')[1].split('.googleapis.com')[0]
 
@@ -42,14 +43,19 @@ const <%=resource_name-%>AssetType string = "<%=product_backend_name.downcase-%>
 
 const <%=resource_name-%>AssetNameRegex string = "<%=format2regex(object.base_url)-%>"
 
+const <%=resource_name-%>SchemaName string = "<%=resource_name_underscore-%>"
+
 type <%=converter_name-%> struct {
 	name   string
 	schema map[string]*schema.Schema
 }
 
-func New<%=converter_name-%>(name string, schema map[string]*schema.Schema) common.Converter {
+func New<%=converter_name-%>(provider *schema.Provider) common.Converter {
+    schemaName := <%=resource_name-%>SchemaName
+    schema := provider.ResourcesMap[schemaName].Schema
+
 	return &<%=converter_name-%>{
-		name:   name,
+		name:   schemaName,
 		schema: schema,
 	}
 }
